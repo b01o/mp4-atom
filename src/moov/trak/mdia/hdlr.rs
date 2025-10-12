@@ -29,7 +29,7 @@ impl AtomExt for Hdlr {
         let name = String::decode(buf)?;
 
         // Skip any trailing padding
-        //buf.advance(buf.remaining());
+        buf.advance(buf.remaining());
 
         Ok(Hdlr { handler, name })
     }
