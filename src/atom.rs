@@ -197,7 +197,10 @@ macro_rules! nested {
                         },
                         Any::Skip(atom) => tracing::debug!("skipping skip box of size {}", atom.zeroed.size),
                         Any::Free(atom) => tracing::debug!("skipping free box of size {}", atom.zeroed.size),
-                        _ => return Err(Error::UnexpectedBox(atom.kind())),
+                        _ => {
+                            tracing::warn!("unexpected box: {:?}", atom.kind());
+                            // return Err(Error::UnexpectedBox(atom.kind()))
+                        }
                     }
                 }
 
