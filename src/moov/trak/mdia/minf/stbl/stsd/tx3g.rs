@@ -65,6 +65,14 @@ impl Atom for Tx3g {
         ];
         let style_record = <[u8; 12]>::decode(buf)?;
 
+        if buf.has_remaining() {
+            tracing::warn!(
+                "tx3g box has {} trailing bytes",
+                buf.remaining()
+            );
+            buf.advance(buf.remaining());
+        }
+
         Ok(Tx3g {
             data_reference_index,
             display_flags,
