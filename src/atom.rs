@@ -195,7 +195,10 @@ macro_rules! nested {
                         Any::Unknown(kind, _) => {
                             tracing::warn!("unknown box: {:?}", kind);
                         },
-                        _ => return Err(Error::UnexpectedBox(atom.kind())),
+                        _ => {
+                            tracing::warn!("unexpected box: {:?}", atom.kind());
+                            // return Err(Error::UnexpectedBox(atom.kind()))
+                        }
                     }
                 }
 
