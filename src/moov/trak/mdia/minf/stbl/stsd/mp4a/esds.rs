@@ -3,7 +3,8 @@ use crate::*;
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Esds {
-    pub es_desc: EsDescriptor,
+    //TODO: es_descriptor
+    pub es_desc: Vec<u8>,
 }
 
 impl AtomExt for Esds {
@@ -12,25 +13,13 @@ impl AtomExt for Esds {
     const KIND_EXT: FourCC = FourCC::new(b"esds");
 
     fn decode_body_ext<B: Buf>(buf: &mut B, _ext: ()) -> Result<Self> {
-        let mut es_desc = None;
-
-        while let Some(desc) = Descriptor::decode_maybe(buf)? {
-            match desc {
-                Descriptor::EsDescriptor(desc) => es_desc = Some(desc),
-                Descriptor::Unknown(tag, _) => {
-                    tracing::warn!("unknown descriptor: {:02X}", tag)
-                }
-                _ => return Err(Error::UnexpectedDescriptor(desc.tag())),
-            }
-        }
-
         Ok(Esds {
-            es_desc: es_desc.ok_or(Error::MissingDescriptor(EsDescriptor::TAG))?,
+            es_desc: Vec::decode_exact(buf, buf.remaining())?,
         })
     }
 
     fn encode_body_ext<B: BufMut>(&self, buf: &mut B) -> Result<()> {
-        Descriptor::from(self.es_desc).encode(buf)
+        self.es_desc.encode(buf)
     }
 }
 
