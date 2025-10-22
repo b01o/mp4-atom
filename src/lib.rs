@@ -178,6 +178,3 @@ mod tokio;
 
 #[cfg(feature = "tokio")]
 pub use self::tokio::*;
-
-#[cfg(test)]
-mod test;

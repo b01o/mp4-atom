@@ -1,4 +1,4 @@
-use crate::*;
+use mp4_atom::*;
 
 #[test]
 fn heif() {
@@ -131,7 +131,7 @@ fn heif() {
                 Iprp {
                     ipco: Ipco {
                         properties: vec![
-                            any::Any::Hvcc(Hvcc {
+                            Any::Hvcc(Hvcc {
                                 configuration_version: 1,
                                 general_profile_space: 0,
                                 general_tier_flag: false,

@@ -42,7 +42,33 @@ use derive_more::From;
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 pub struct Stsd {
-    pub codecs: Vec<Codec>,
+    // pub codecs: Vec<Codec>,
+    pub sample_entries: Vec<SampleEntry>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub struct SampleEntry {
+    pub kind: FourCC,
+    pub data: Vec<u8>,
+}
+
+impl SampleEntry {
+    pub fn header(&self) -> Header {
+        Header {
+            kind: self.kind,
+            size: Some(self.data.len()),
+        }
+    }
+}
+
+impl Default for SampleEntry {
+    fn default() -> Self {
+        Self {
+            kind: FourCC::new(b"????"),
+            data: Vec::new(),
+        }
+    }
 }
 
 /// Called a "sample entry" in the ISOBMFF specification.
@@ -142,21 +168,31 @@ impl AtomExt for Stsd {
     const KIND_EXT: FourCC = FourCC::new(b"stsd");
 
     fn decode_body_ext<B: Buf>(buf: &mut B, _ext: ()) -> Result<Self> {
-        let codec_count = u32::decode(buf)?;
-        let mut codecs = Vec::new();
+        let entry_count = u32::decode(buf)?;
+        let mut sample_entries = Vec::new();
 
-        for _ in 0..codec_count {
-            let codec = Codec::decode(buf)?;
-            codecs.push(codec);
+        for _ in 0..entry_count {
+            let header = Header::decode(buf)?;
+            let kind = header.kind;
+            let size = header.size.ok_or(Error::InvalidSize)?;
+            let data = buf.slice(size).to_vec();
+            buf.advance(size);
+
+            sample_entries.push(SampleEntry { kind, data });
         }
 
-        Ok(Stsd { codecs })
+        Ok(Stsd { sample_entries })
     }
 
     fn encode_body_ext<B: BufMut>(&self, buf: &mut B) -> Result<()> {
-        (self.codecs.len() as u32).encode(buf)?;
-        for codec in &self.codecs {
-            codec.encode(buf)?;
+        (self.sample_entries.len() as u32).encode(buf)?;
+        for entry in &self.sample_entries {
+            let header = Header {
+                kind: entry.kind,
+                size: Some(entry.data.len()),
+            };
+            header.encode(buf)?;
+            buf.append_slice(&entry.data);
         }
 
         Ok(())

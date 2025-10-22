@@ -188,39 +188,26 @@ mod test {
                             },
                             stbl: Stbl {
                                 stsd: Stsd {
-                                    codecs: vec![Avc1 {
-                                        visual: Visual {
-                                            data_reference_index: 1,
-                                            width: 1920,
-                                            height: 1080,
-                                            horizresolution: 72.into(),
-                                            vertresolution: 72.into(),
-                                            frame_count: 1,
-                                            compressor: "\nAVC Coding".into(),
-                                            depth: 24,
-                                        },
-                                        avcc: Avcc {
-                                            configuration_version: 1,
-                                            avc_profile_indication: 100,
-                                            profile_compatibility: 0,
-                                            avc_level_indication: 40,
-                                            length_size: 4,
-                                            sequence_parameter_sets: vec![vec![
-                                                103, 100, 0, 40, 172, 217, 64, 120, 2, 39, 229,
-                                                132, 0, 0, 3, 0, 4, 0, 0, 3, 0, 240, 60, 96, 198,
-                                                88
-                                            ]],
-                                            picture_parameter_sets: vec![vec![
-                                                104, 235, 236, 178, 44
-                                            ]],
-                                            ext: None,
-                                        },
-                                        btrt: None,
-                                        colr: None,
-                                        pasp: None,
-                                        taic: None,
-                                    }
-                                    .into()],
+                                    sample_entries: vec![SampleEntry {
+                                        kind: FourCC::new(b"avc1"),
+                                        data: vec![
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x80, 0x04,
+                                            0x38, 0x00, 0x48, 0x00, 0x00, 0x00, 0x48, 0x00, 0x00,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x0A, 0x41, 0x56,
+                                            0x43, 0x20, 0x43, 0x6F, 0x64, 0x69, 0x6E, 0x67, 0x00,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                                            0x00, 0x00, 0x00, 0x18, 0xFF, 0xFF, 0x00, 0x00, 0x00,
+                                            0x32, 0x61, 0x76, 0x63, 0x43, 0x01, 0x64, 0x00, 0x28,
+                                            0xFF, 0xE1, 0x00, 0x1A, 0x67, 0x64, 0x00, 0x28, 0xAC,
+                                            0xD9, 0x40, 0x78, 0x02, 0x27, 0xE5, 0x84, 0x00, 0x00,
+                                            0x03, 0x00, 0x04, 0x00, 0x00, 0x03, 0x00, 0xF0, 0x3C,
+                                            0x60, 0xC6, 0x58, 0x01, 0x00, 0x05, 0x68, 0xEB, 0xEC,
+                                            0xB2, 0x2C,
+                                        ]
+                                    }]
                                 },
                                 stco: Some(Stco::default()),
                                 ..Default::default()
