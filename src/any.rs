@@ -277,7 +277,7 @@ any! {
                                 Taic,
                             Hev1, Hvc1,
                                 Hvcc,
-                            Mp4a,
+                            Mp4a, Mp4v,
                                 Esds,
                             Tx3g,
                             Vp08, Vp09,
